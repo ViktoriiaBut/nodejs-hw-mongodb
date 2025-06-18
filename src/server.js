@@ -24,17 +24,31 @@ export const setupServer = () => {
         });
     });
 
-    app.get('/contacts/:contactId', async(req, res) => {
-        const { contactId } = req.params;
+   app.get('/contacts/:contactId', async (req, res) => {
+    const { contactId } = req.params;
+
+    try {
         const contact = await getContactById(contactId);
+
+        if (!contact) {
+            return res.status(404).json({
+                status: 404,
+                message: 'Contact not found',
+            });
+        }
+
         res.status(200).json({
             status: 200,
             message: `Successfully found contact ${contactId}`,
             data: contact,
-        })
+        });
+    } catch (err) {
+            return res.status(400).json({
+            status: 400,
+            message: 'Invalid contact ID',
+        });
     }
-        )
-
+});
 
     app.use((req, res) => {
       res.status(404).json({
@@ -42,12 +56,12 @@ export const setupServer = () => {
       });
     });
 
-    app.use((err, req, res, next) => {
-        res.status(500).json({
-            message: 'Something went wrong',
-            error: err.message,
-        });
-    });
+ app.use((err, req, res, next) => {
+  res.status(500).json({
+    message: 'Something went wrong',
+    error: err.message,
+  });
+});
 
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);

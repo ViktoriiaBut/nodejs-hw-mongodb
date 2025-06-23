@@ -7,29 +7,25 @@ import router from "./routers/index.js";
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
+
 export const setupServer = () => {
-    const app = express();
-    const PORT = Number(getEnvVar('PORT', 3000));
+  const app = express();
+  const PORT = Number(getEnvVar('PORT', 3000));
 
-    app.use(cors(), pino());
-    // app.use(pino({
-    //     transport: {
-    //         target: 'pino-pretty',
-    //     },
-    // }));
-
-    app.use(router);
-
-    app.use(json({
-      type: ['application/json', 'application/vnd.api+json'],
+  app.use(
+    express.json({
+    type: ['application/json', 'application/vnd.api+json'],
     }),
   );
 
-    app.use(notFoundHandler);
+  app.use(cors(), pino());
 
- app.use(errorHandler);
+  app.use(router);
 
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
-}
+  app.use(notFoundHandler);
+  app.use(errorHandler);
+
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+};

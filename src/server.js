@@ -6,6 +6,7 @@ import { getEnvVar } from './utils/getEnvVar.js';
 import router from "./routers/index.js";
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import cookieParser from 'cookie-parser';
 
 
 export const setupServer = () => {
@@ -18,7 +19,7 @@ export const setupServer = () => {
     }),
   );
 
-  app.use(cors(), pino());
+  app.use(cors(), pino(), cookieParser());
 
   app.use(router);
 

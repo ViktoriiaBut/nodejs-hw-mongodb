@@ -14,8 +14,12 @@ const userShema = new Schema (
         type: String,
         required: true,
         unique: true,
-            },
-
+        },
+    parentId: {
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+        required: true,
+    }
 },
      { timestamps: true,
        versionKey: false

@@ -5,6 +5,10 @@ import { createContact, deleteContactById, getAllContacts, getContactById, updat
 
 export const getAllContactsController = async (req, res) => {
     const { page = 1, perPage = 10, sortBy='name', sortOrder='asc', contactType, isFavourite } = req.query;
+    const filters = { parentId: req.user._id };
+
+      if (contactType) filters.contactType = contactType;
+      if (isFavourite !== undefined) filters.isFavourite = isFavourite === 'true';
 
         const data = await getAllContacts({
           page: Number(page),

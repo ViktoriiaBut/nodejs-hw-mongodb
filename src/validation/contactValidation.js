@@ -7,13 +7,14 @@ export const createContactValidation = Joi.object({
     email: Joi.string().email(),
     isFavourite: Joi.boolean(),
     contactType: Joi.string().valid('work', 'home', 'personal').default('personal').required(),
-    parentId: Joi.string().custom((value, helper) => {
-        if(!isValidObjectId(value)) {
-            return helper.message('Not valid mongo objectId');
-        }
-        return value;
-    }),
+  parentId: Joi.string().custom((value, helper) => {
+		    if (value && !isValidObjectId(value)) {
+		      return helper.message('Parent id should be a valid mongo id');
+		    }
+		    return true;
+		 }),
 });
+
 
 export const updateContactValidation = Joi.object({
     name: Joi.string().min(3).max(20),

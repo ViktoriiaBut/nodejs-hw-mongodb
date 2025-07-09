@@ -15,11 +15,7 @@ const userShema = new Schema (
         required: true,
         unique: true,
         },
-    parentId: {
-        type: Schema.Types.ObjectId,
-        ref: 'users',
-        required: true,
-    }
+
 },
      { timestamps: true,
        versionKey: false

@@ -25,10 +25,12 @@ export const getAllContacts = async ({
   sortOrder = 'asc',
   contactType,
   isFavourite,
+  filters = {},
   }) => {
   const offset = (page - 1) * perPage;
 
-  const filter = {};
+  const filter = { ...filters };
+  
   if (contactType) {
     filter.contactType = contactType;
   }

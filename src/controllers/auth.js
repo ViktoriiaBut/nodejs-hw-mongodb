@@ -5,19 +5,17 @@ const setUpSessionCookies = (session, res) => {
         {httpOnly: true,
          expires: session.refreshTokenValidUntil,
         });
- res.cookie('sessionToken', session.refreshToken,
+ res.cookie('refreshToken', session.refreshToken,
         {httpOnly: true,
          expires: session.refreshTokenValidUntil,
         });
-
 };
 
 export const registerUserController = async( req, res) => {
     const user = await registerUser(req.body);
 
-
     res.json({
-        status: 200,
+        status: 201,
         message: "Successfully created User",
     data: user,
 });
@@ -37,11 +35,11 @@ export const registerUserController = async( req, res) => {
  };
 
 export const logoutUserController = async( req, res) => {
-    const {sessionToken, sessionId} = req.cookies;
+    const {refreshToken, sessionId} = req.cookies;
 
-    await logoutUser(sessionToken, sessionId);
+    await logoutUser(sessionId, refreshToken);
 
-    res.clearCookie('sessionToken');
+    res.clearCookie(refreshToken);
     res.clearCookie('sessionId');
     res.status(204).send();
 };

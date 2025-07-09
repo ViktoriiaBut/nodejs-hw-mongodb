@@ -5,7 +5,7 @@ import { createContact, deleteContactById, getAllContacts, getContactById, updat
 
 export const getAllContactsController = async (req, res) => {
     const { page = 1, perPage = 10, sortBy='name', sortOrder='asc', contactType, isFavourite } = req.query;
-    const filters = { parentId: req.user._id };
+    const filters = { userId: req.user._id };
 
       if (contactType) filters.contactType = contactType;
       if (isFavourite !== undefined) filters.isFavourite = isFavourite === 'true';
@@ -41,7 +41,7 @@ export const getContactByIdController = async (req, res) => {
 
    export const createContactsController = async (req, res) => {
     const contact = await createContact({...req.body,
-         parentId: req.body.parentId ?? req.user._id,});
+         userId: req.body.parentId ?? req.user._id,});
 
     return  res.status(201).json({
             status: 201,

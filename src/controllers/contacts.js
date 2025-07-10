@@ -2,7 +2,6 @@ import createHttpError from "http-errors";
 import { createContact, deleteContactById, getAllContacts, getContactById, updateContact } from "../services/contacts.js";
 
 
-
 export const getAllContactsController = async (req, res) => {
     const { page = 1, perPage = 10, sortBy='name', sortOrder='asc', contactType, isFavourite } = req.query;
     const filters = { userId: req.user._id };
@@ -17,6 +16,7 @@ export const getAllContactsController = async (req, res) => {
           sortOrder,
           contactType,
           isFavourite,
+          filters,
         });
         res.status(200).json({
             status: 200,
@@ -24,6 +24,7 @@ export const getAllContactsController = async (req, res) => {
             data,
         });
     };
+
 
 export const getContactByIdController = async (req, res) => {
     const { contactId } = req.params;
@@ -40,15 +41,17 @@ export const getContactByIdController = async (req, res) => {
    };
 
    export const createContactsController = async (req, res) => {
-    const contact = await createContact({...req.body,
-         userId: req.body.parentId ?? req.user._id,});
+    const contact = await createContact({
+        ...req.body,
+         userId:  req.user._id,
+        });
 
     return  res.status(201).json({
             status: 201,
             message: 'Successfully created contact',
             data: contact,
         });
-}
+};
 
 export const patchContactsController = async (req, res) => {
     const { contactId } = req.params;
@@ -62,7 +65,8 @@ export const patchContactsController = async (req, res) => {
             message: `Successfully updated contact with id ${contactId}`,
             data: contact,
         });
-}
+};
+
 export const deleteContactController = async (req, res, next) => {
         const { contactId } = req.params;
         const deleted = await deleteContactById(contactId);

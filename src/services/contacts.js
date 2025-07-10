@@ -30,7 +30,7 @@ export const getAllContacts = async ({
   const offset = (page - 1) * perPage;
 
   const filter = { ...filters };
-  
+
   if (contactType) {
     filter.contactType = contactType;
   }
@@ -50,8 +50,10 @@ export const getAllContacts = async ({
   return pagination;
 };
 
-export const getContactById = async (contactId) => {
-  const contact = await Contacts.findById(contactId);
+
+export const getContactById = async (id, userId) => {
+  const contact = Contacts.findOne({ _id: id, userId });
+
     if (!contact) {
     throw createHttpError(404, 'Contact not found');
   }
@@ -63,8 +65,8 @@ export const createContact = async (payload) => {
   return contact;
 };
 
-export const updateContact = async (contactId, payload) => {
-  const contact = await Contacts.findByIdAndUpdate(contactId, payload, { new: true });
+export const updateContact = async (id, userId, payload) => {
+  const contact = await Contacts.findOneAndUpdate({ _id: id, userId }, payload, { new: true });
 
   if (!contact) {
     throw createHttpError(404, 'Contact not found');
@@ -72,7 +74,7 @@ export const updateContact = async (contactId, payload) => {
   return contact;
 };
 
-export const deleteContactById = async (contactId) => {
-  const contact = await Contacts.findByIdAndDelete(contactId);
+export const deleteContactById = async (id, userId) => {
+  const contact = await Contacts.findOneAndDelete({ _id: id, userId });
   return contact;
 };

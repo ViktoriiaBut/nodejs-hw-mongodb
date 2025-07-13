@@ -1,32 +1,34 @@
 import express from 'express';
-import { json } from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
-import { getEnvVar } from './utils/getEnvVar.js';
-import router from "./routers/index.js";
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import cookieParser from 'cookie-parser';
-
+import authRouter from './routers/auth.js';
+import { authenticate } from './middlewares/authenticate.js';
+import contactsRouter from './routers/contacts.js';
 
 export const setupServer = () => {
-  const app = express();
-  const PORT = Number(getEnvVar('PORT', 3000));
+    const app = express();
 
-  app.use(
-    express.json({
-    type: ['application/json', 'application/vnd.api+json'],
-    }),
-  );
+    app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+  }));
+    app.use(pino());
+    app.use(express.json());
+    app.use(cookieParser());
 
-  app.use(cors(), pino(), cookieParser());
+    app.use('/auth', authRouter);
 
-  app.use(router);
+    app.use('/contacts', authenticate, contactsRouter);
 
-  app.use(notFoundHandler);
-  app.use(errorHandler);
+    app.use(notFoundHandler);
 
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+    app.use(errorHandler);
+
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
 };

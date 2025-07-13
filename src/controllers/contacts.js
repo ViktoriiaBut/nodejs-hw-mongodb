@@ -26,19 +26,24 @@ export const getAllContactsController = async (req, res) => {
     };
 
 
-export const getContactByIdController = async (req, res) => {
+export const getContactByIdController = async (req, res, next) => {
+  try {
     const { contactId } = req.params;
+    const contact = await getContactById(contactId, req.user._id); 
 
-        const contact = await getContactById(contactId);
-        if (!contact) {
-            throw createHttpError(404, 'Contact not found');
-        }
-        res.status(200).json({
-            status: 200,
-            message: `Successfully found contact ${contactId}`,
-            data: contact,
-        });
-   };
+    if (!contact) {
+      throw createHttpError(404, 'Contact not found');
+    }
+
+    res.status(200).json({
+      status: 200,
+      message: `Successfully found contact ${contactId}`,
+      data: contact,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
    export const createContactsController = async (req, res) => {
     const contact = await createContact({
@@ -53,18 +58,23 @@ export const getContactByIdController = async (req, res) => {
         });
 };
 
-export const patchContactsController = async (req, res) => {
+export const patchContactsController = async (req, res, next) => {
+  try {
     const { contactId } = req.params;
-    const contact = await updateContact (contactId, req.body)
+    const contact = await updateContact(contactId, req.body, req.user._id);
 
     if (!contact) {
-    throw createHttpError(404, 'Contact not found');
+      throw createHttpError(404, 'Contact not found');
+    }
+
+    return res.status(200).json({
+      status: 200,
+      message: `Successfully updated contact with id ${contactId}`,
+      data: contact,
+    });
+  } catch (error) {
+    next(error);
   }
-    return  res.status(200).json({
-            status: 200,
-            message: `Successfully updated contact with id ${contactId}`,
-            data: contact,
-        });
 };
 
 export const deleteContactController = async (req, res, next) => {

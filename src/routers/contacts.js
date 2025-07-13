@@ -16,3 +16,4 @@ contactsRouter.patch('/:contactId', validateBody(updateContactValidation), patch
 contactsRouter.delete('/:contactId', deleteContactController);
 
 export default contactsRouter;
+

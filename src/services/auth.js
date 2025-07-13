@@ -42,31 +42,35 @@ export const loginUser = async (payload) => {
  return session;
 }
 
-export const logoutUser = async (sessionId, refreshToken) => {
-      await Session.findOneAndDelete({ _id: sessionId, refreshToken });
-    };
+export const refreshSession = async (refreshToken) => {
+  const session = await Session.findOne({ refreshToken });
 
+  if (!session) {
+    throw createHttpError(401, 'Session not found');
+  }
+  if (session.refreshTokenValidUntil < new Date()) {
+    throw createHttpError(401, 'Session expired');
+  }
 
-export const refreshSession = async(sessionId, sessionToken) => {
-    const session = await Session.findOne({_id: sessionId, refreshToken: sessionToken});
+  await Session.deleteOne({ _id: session._id });
 
-    if(!session) {
-        throw createHttpError(401, 'Session not found');
-    }
-    if(session.refreshTokenValidUntil < new Date()) {
-        throw createHttpError(401, 'Session expired');
-    }
-
-    await Session.findOneAndDelete({ _id: sessionId });
-
-   const newSession = await Session.create({
+  const newSession = await Session.create({
     accessToken: crypto.randomBytes(30).toString('base64'),
     refreshToken: crypto.randomBytes(30).toString('base64'),
-    accessTokenValidUntil: new Date(Date.now() + 1000 * 60 * 15),
-    refreshTokenValidUntil: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
+    refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     userId: session.userId,
- });
- return newSession;
-}
+  });
 
+  return {
+    accessToken: newSession.accessToken,
+    refreshToken: newSession.refreshToken,
+    sessionId: newSession._id,
+    accessTokenValidUntil: newSession.accessTokenValidUntil,
+    refreshTokenValidUntil: newSession.refreshTokenValidUntil,
+  };
+};
 
+export const logoutUser = async (refreshToken) => {
+    await Session.deleteOne({ refreshToken });
+};

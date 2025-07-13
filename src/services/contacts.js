@@ -50,9 +50,8 @@ export const getAllContacts = async ({
   return pagination;
 };
 
-
-export const getContactById = async (id, userId) => {
-  const contact = Contacts.findOne({ _id: id, userId });
+export const getContactById = async (contactId, userId) => {
+  const contact = Contacts.findOne({ _id: contactId, userId });
 
     if (!contact) {
     throw createHttpError(404, 'Contact not found');
@@ -65,8 +64,12 @@ export const createContact = async (payload) => {
   return contact;
 };
 
-export const updateContact = async (id, userId, payload) => {
-  const contact = await Contacts.findOneAndUpdate({ _id: id, userId }, payload, { new: true });
+export const updateContact = async (contactId, body, userId) => {
+  const contact = await Contacts.findOneAndUpdate(
+    { _id: contactId, userId },
+    body,
+    { new: true }
+  );
 
   if (!contact) {
     throw createHttpError(404, 'Contact not found');

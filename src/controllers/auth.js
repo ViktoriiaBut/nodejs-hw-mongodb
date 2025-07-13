@@ -1,14 +1,20 @@
 import { registerUser, loginUser, logoutUser, refreshSession } from "../services/auth.js";
+import mongoose from "mongoose";
 
 const setUpSessionCookies = (session, res) => {
- res.cookie('sessionId', session.id,
-        {httpOnly: true,
-         expires: session.refreshTokenValidUntil,
-        });
- res.cookie('refreshToken', session.refreshToken,
-        {httpOnly: true,
-         expires: session.refreshTokenValidUntil,
-        });
+  const sessionId = session._id instanceof mongoose.Types.ObjectId
+    ? session._id.toHexString()
+    : session._id;
+
+  res.cookie("sessionId", sessionId, {
+    httpOnly: true,
+    expires: session.refreshTokenValidUntil,
+  });
+
+  res.cookie("refreshToken", session.refreshToken, {
+    httpOnly: true,
+    expires: session.refreshTokenValidUntil,
+  });
 };
 
 export const registerUserController = async( req, res) => {
@@ -34,20 +40,32 @@ export const registerUserController = async( req, res) => {
      });
  };
 
-export const logoutUserController = async( req, res) => {
-    const {refreshToken, sessionId} = req.cookies;
+
+export const logoutUserController = async (req, res, next) => {
+  try {
+    const { refreshToken, sessionId } = req.cookies;
+
+    if (!refreshToken || !sessionId) {
+      return res.status(400).json({ status: 400, message: 'Missing session cookies' });
+    }
 
     await logoutUser(sessionId, refreshToken);
 
-    res.clearCookie(refreshToken);
+    res.clearCookie('refreshToken');
     res.clearCookie('sessionId');
+
     res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
 };
+
 
 export const refreshSessionController = async (req, res, next) => {
   try {
-    const { sessionToken, sessionId } = req.cookies;
-    const session = await refreshSession(sessionId, sessionToken);
+
+    const { refreshToken } = req.cookies;
+    const session = await refreshSession(refreshToken);
 
     setUpSessionCookies(session, res);
 

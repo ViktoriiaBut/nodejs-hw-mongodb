@@ -17,7 +17,7 @@ export const authenticate = async (req, res, next) => {
     }
 
     const session = await Session.findOne({ accessToken: token });
-
+    
     if (!session) {
       throw createHttpError(401, 'Session not found');
     }
@@ -38,3 +38,4 @@ export const authenticate = async (req, res, next) => {
     next(error);
   }
 };
+

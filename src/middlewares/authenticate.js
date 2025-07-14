@@ -17,7 +17,7 @@ export const authenticate = async (req, res, next) => {
     }
 
     const session = await Session.findOne({ accessToken: token });
-    
+
     if (!session) {
       throw createHttpError(401, 'Session not found');
     }
@@ -34,8 +34,8 @@ export const authenticate = async (req, res, next) => {
 
     req.user = user;
     next();
-  } catch (error) {
-    next(error);
+  } catch {
+    next(createHttpError(401, 'Invalid or expired access token'));
   }
 };
 

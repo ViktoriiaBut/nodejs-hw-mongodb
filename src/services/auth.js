@@ -3,6 +3,7 @@ import { User} from '../db/models/user.Model.js';
 import bcrypt from 'bcrypt';
 import crypto from 'node:crypto';
 import { Session } from "../db/models/sessionModel.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 export const registerUser = async (payload) => {
  const existingUser = await User.findOne({email: payload.email});
@@ -74,3 +75,7 @@ export const refreshSession = async (refreshToken) => {
 export const logoutUser = async (refreshToken) => {
     await Session.deleteOne({ refreshToken });
 };
+
+export const requestResetEmail = async (email) => {
+   await sendEmail({ email })
+}

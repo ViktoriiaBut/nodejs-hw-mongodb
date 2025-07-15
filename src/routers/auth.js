@@ -4,7 +4,9 @@ import {
   registerUserController,
   loginUserController,
   logoutUserController,
-  refreshSessionController
+  refreshSessionController,
+  requestResetEmailValidation,
+  requestResetEmailController
 } from "../controllers/auth.js";
 
 import { validateBody } from "../middlewares/validateBody.js";
@@ -16,6 +18,9 @@ authRouter.post('/register', validateBody(registerUserValidation), registerUserC
 authRouter.post('/login', validateBody(loginUserValidation), loginUserController);
 authRouter.post('/refresh', refreshSessionController);
 authRouter.post('/logout', logoutUserController);
+authRouter.post('/send-reset-email', requestResetEmailValidation, requestResetEmailController);
+// authRouter.post('/reset-password, ')
+
 
 export default authRouter;
 

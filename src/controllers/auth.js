@@ -1,4 +1,4 @@
-import { registerUser, loginUser, logoutUser, refreshSession } from "../services/auth.js";
+import { registerUser, loginUser, logoutUser, refreshSession, requestResetEmail } from "../services/auth.js";
 import mongoose from "mongoose";
 
 const setUpSessionCookies = (session, res) => {
@@ -77,4 +77,16 @@ export const refreshSessionController = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+export const requestResetEmailController = async (req, res,) => {
+   const {email} = req.body;
+
+   await requestResetEmail {email};
+
+   res.send({
+    status: 200,
+    message: 'Reset password email has been successfully sent',
+    data: {},
+   });
 };

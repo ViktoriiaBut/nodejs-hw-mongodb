@@ -41,25 +41,17 @@ export const registerUserController = async( req, res) => {
  };
 
 
-export const logoutUserController = async (req, res, next) => {
-  try {
-    const { refreshToken, sessionId } = req.cookies;
+export const logoutUserController = async (req, res) => {
+  const { refreshToken } = req.cookies;
 
-    if (!refreshToken || !sessionId) {
-      return res.status(400).json({ status: 400, message: 'Missing session cookies' });
-    }
-
-    await logoutUser(sessionId, refreshToken);
-
-    res.clearCookie('refreshToken');
-    res.clearCookie('sessionId');
-
-    res.status(204).send();
-  } catch (error) {
-    next(error);
+  if (!refreshToken) {
+    res.status(400).json({ status: 400, message: 'Missing session cookies' });
   }
-};
 
+  await logoutUser(refreshToken);
+  res.clearCookie('refreshToken');
+  res.status(204).send();
+};
 
 export const refreshSessionController = async (req, res, next) => {
   try {

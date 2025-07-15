@@ -59,3 +59,15 @@ export const refreshSessionController = async (req, res, next) => {
     next(error);
   }
 };
+
+export const logoutUserController = async (req, res) => {
+  const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
+    res.status(400).json({ status: 400, message: 'Missing session cookies' });
+  }
+
+  await logoutUser(refreshToken);
+  res.clearCookie('refreshToken');
+  res.status(204).send();
+};

@@ -1,6 +1,5 @@
-import { registerUser, loginUser, logoutUser, refreshSession, requestResetEmail } from "../services/auth.js";
+import { registerUser, loginUser, logoutUser, refreshSession, requestResetEmail, resetPassword } from "../services/auth.js";
 import mongoose from "mongoose";
-import { getEnvVar } from "../utils/getEnvVar.js";
 
 
 const setUpSessionCookies = (session, res) => {
@@ -23,7 +22,7 @@ export const registerUserController = async( req, res) => {
     const user = await registerUser(req.body);
 
     res.json({
-        status: 201,
+        status: 200,
         message: "Successfully created User",
     data: user,
 });
@@ -86,18 +85,28 @@ export const requestResetEmailController = async (req, res,) => {
    });
 };
 
-// export const requestResetEmailController = async (req, res, next) => {
-//   try {
-//     const { email } = req.body;
+// export const resetPasswordController = async (req, res,) => {
+//    await resetPassword (req.body);
 
-//     await requestResetEmail({ email });
-
-//     res.send({
-//       status: 200,
-//       message: 'Reset password email has been successfully sent',
-//       data: {},
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
+//    res.send({
+//     status: 200,
+//     message: 'Reset password has been successfully sent',
+//     data: {},
+//    });
 // };
+
+
+export const resetPasswordController = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+    await resetPassword({ token, password });
+
+    res.status(200).json({
+      status: 200,
+      message: 'Password successfully reset',
+      data: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};

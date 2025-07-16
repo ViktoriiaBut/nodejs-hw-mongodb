@@ -5,12 +5,12 @@ import {
   loginUserController,
   logoutUserController,
   refreshSessionController,
-  requestResetEmailValidation,
-  requestResetEmailController
+  requestResetEmailController,
+  resetPasswordController
 } from "../controllers/auth.js";
 
 import { validateBody } from "../middlewares/validateBody.js";
-import { registerUserValidation, loginUserValidation } from "../validation/authValidation.js";
+import { registerUserValidation, loginUserValidation, requestResetEmailValidation, resetPasswordValidation } from "../validation/authValidation.js";
 
 const authRouter = Router();
 
@@ -18,8 +18,8 @@ authRouter.post('/register', validateBody(registerUserValidation), registerUserC
 authRouter.post('/login', validateBody(loginUserValidation), loginUserController);
 authRouter.post('/refresh', refreshSessionController);
 authRouter.post('/logout', logoutUserController);
-authRouter.post('/send-reset-email', requestResetEmailValidation, requestResetEmailController);
-// authRouter.post('/reset-password, ')
+authRouter.post('/send-reset-email', validateBody(requestResetEmailValidation), requestResetEmailController);
+authRouter.post('/reset-pwd', validateBody(resetPasswordValidation), resetPasswordController);
 
 
 export default authRouter;

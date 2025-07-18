@@ -1,8 +1,5 @@
 import createHttpError from "http-errors";
 import { createContact, deleteContactById, getAllContacts, getContactById, updateContact } from "../services/contacts.js";
-// import fs from 'fs/promises';
-// import path from 'path';
-// import { UPLOAD_DIR } from '../constants/paths.js';
 import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
 
 export const getAllContactsController = async (req, res) => {
@@ -49,51 +46,57 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 
-export const createContactsController = async (req, res) => {
+export const createContactsController = async (req, res, next) => {
+  try {
     const avatar = req.file;
     let avatarUrl;
     if (avatar) {
-        avatarUrl = await saveFileToCloudinary(avatar);
+      avatarUrl = await saveFileToCloudinary(avatar);
     }
 
     const contact = await createContact({
-        ...req.body,
-        avatar: avatarUrl,
-        userId: req.user._id
+      ...req.body,
+      avatar: avatarUrl,
+      userId: req.user._id
     });
 
     res.status(201).json({
-        status: 201,
-        message: "Successfully created a contact!",
-        data: contact
+      status: 201,
+      message: "Successfully created a contact!",
+      data: contact
     });
+  } catch (error) {
+    console.error(' Error in createContactsController:', error);
+    next(error);
+  }
 };
 
-export const patchContactsController  = async (req, res) => {
-    const { contactId } = req.params;
-    const avatar = req.file;
-    let avatarUrl;
-    if (avatar) {
-        avatarUrl = await saveFileToCloudinary(avatar);
-    }
 
-    const result = await updateContact (
-        { _id: contactId, userId: req.user._id },
-        { ...req.body, avatar: avatarUrl },
-        { upsert: true },
-    );
-    if (!result) {
-        throw createHttpError(404, 'Contact not found');
-    }
+export const patchContactsController = async (req, res) => {
+  const { contactId } = req.params;
+  const avatar = req.file;
 
-    const status = result.isNew ? 201 : 200;
+  let avatarUrl;
+  if (avatar) {
+    avatarUrl = await saveFileToCloudinary(avatar);
+  }
+  const updates = {
+    ...req.body,
+    ...(avatarUrl && { avatar: avatarUrl })
+  };
 
-    res.status(status).json({
-        status,
-        message: `Successfully patched a contact!`,
-        data: result.contact,
-    });
+  const result = await updateContact(contactId, req.user._id, updates);
+  if (!result) {
+    throw createHttpError(404, 'Contact not found');
+  }
+
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: result,
+  });
 };
+
 
 export const deleteContactController = async (req, res) => {
         const { contactId } = req.params;

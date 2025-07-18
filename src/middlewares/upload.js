@@ -1,6 +1,7 @@
 import multer from 'multer';
 import { TEMP_UPLOAD_DIR } from '../constants/paths.js';
 
+console.log('TEMP_UPLOAD_DIR:', TEMP_UPLOAD_DIR);
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

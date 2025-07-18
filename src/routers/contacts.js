@@ -18,5 +18,6 @@ contactsRouter.post('/', upload.single('avatar'), validateBody(createContactVali
 contactsRouter.patch('/:contactId', upload.single('avatar'), validateBody(updateContactValidation), patchContactsController);
 contactsRouter.delete('/:contactId', deleteContactController);
 
+
 export default contactsRouter;
 

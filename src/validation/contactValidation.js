@@ -7,7 +7,7 @@ export const createContactValidation = Joi.object({
     email: Joi.string().email(),
     isFavourite: Joi.boolean(),
     contactType: Joi.string().valid('work', 'home', 'personal').default('personal').required(),
-
+   
   parentId: Joi.string().custom((value, helper) => {
 		    if (value && !isValidObjectId(value)) {
 		      return helper.message('Parent id should be a valid mongo id');

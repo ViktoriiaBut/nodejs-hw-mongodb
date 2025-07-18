@@ -9,8 +9,8 @@ import { getEnvVar } from "../utils/getEnvVar.js";
 import handleBars from 'handlebars';
 import fs from 'node:fs';
 import path from 'node:path';
-import { TEMPLATE_DIR } from "../constans/paths.js";
-import { ENV_VARS } from "../constans/envVars.js";
+import { TEMPLATE_DIR } from "../constants/paths.js";
+import { ENV_VARS } from "../constants/envVars.js";
 
 
 const resetPasswordTemplate = fs.readFileSync(path.join(TEMPLATE_DIR, 'reset-password-email.html'),)
@@ -41,28 +41,34 @@ export const requestResetEmail = async ({ email }) => {
 };
 
 
-export const resetPassword = async ({token, password}) => {
+export const resetPassword = async (payload) => {
   let tokenPayload;
 
   try {
-    tokenPayload = jwt.verify(token, getEnvVar('JWT_SECRET'));
+    tokenPayload = jwt.verify(payload.token, getEnvVar('JWT_SECRET'));
   } catch(error) {
    console.log(error);
    throw createHttpError(401, 'JWT token expired')
   }
 
-  const user = await User.findById(tokenPayload.sub);
+  const user = await User.findOne({
+        email: tokenPayload .email,
+        _id: tokenPayload .sub
+    });
 
    if(!user) {
     throw createHttpError(404, 'User not found')
    }
 
-   const hashedPassword = await bcrypt.hash(password, 10);
-     user.password = hashedPassword;
-     await user.save();
-     await Session.deleteMany({ userId: user._id });
-};
+   const hashedPassword = await bcrypt.hash(payload.password, 10);
 
+     await User.updateOne({
+        _id: user._id,
+    },
+        {
+            password: hashedPassword
+        });
+};
 
 export const registerUser = async (payload) => {
  const existingUser = await User.findOne({email: payload.email});

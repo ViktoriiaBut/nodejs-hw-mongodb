@@ -27,7 +27,12 @@ const contactShema = new Schema (
     type: Schema.Types.ObjectId,
     ref: 'users',
     required: true,
-    }, },
+    },
+    avatar: {
+     type: String,
+     required: false,
+    }
+    },
      { timestamps: true,
        versionKey: false
     },

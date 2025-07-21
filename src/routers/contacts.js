@@ -14,8 +14,8 @@ contactsRouter.use('/', authenticate);
 contactsRouter.use('/:contactId', isValidId);
 contactsRouter.get('/', getAllContactsController);
 contactsRouter.get('/:contactId', getContactByIdController);
-contactsRouter.post('/', upload.single('avatar'), validateBody(createContactValidation), createContactsController);
-contactsRouter.patch('/:contactId', upload.single('avatar'), validateBody(updateContactValidation), patchContactsController);
+contactsRouter.post('/', upload.single('photo'), validateBody(createContactValidation), createContactsController);
+contactsRouter.patch('/:contactId', upload.single('photo'), validateBody(updateContactValidation), patchContactsController);
 contactsRouter.delete('/:contactId', deleteContactController);
 
 

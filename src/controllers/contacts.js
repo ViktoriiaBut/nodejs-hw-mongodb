@@ -77,17 +77,17 @@ export const getContactByIdController = async (req, res, next) => {
 export const createContactsController = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const avatar = req.file;
+    const photo = req.file;
 
-    let avatarUrl;
-    if (avatar) {
-      avatarUrl = await saveFileToCloudinary(avatar);
+    let photoUrl;
+    if (photo) {
+      photoUrl = await saveFileToCloudinary(photo);
     }
 
     const payload = {
       ...req.body,
       userId,
-      ...(avatarUrl && { avatar: avatarUrl }),
+      ...(photoUrl && { photo: photoUrl}),
     };
 
     const contact = await createContact(payload);
@@ -132,15 +132,15 @@ export const patchContactsController = async (req, res, next) => {
   try {
     const { contactId } = req.params;
     const userId = req.user._id;
-    const avatar = req.file;
+    const photo = req.file;
 
-    let avatarUrl;
-    if (avatar) {
-      avatarUrl = await saveFileToCloudinary(avatar);
+    let photoUrl;
+    if (photo) {
+      photoUrl = await saveFileToCloudinary(photo);
     }
     const updates = {
       ...req.body,
-      ...(avatarUrl && { avatar: avatarUrl }),
+      ...(photoUrl && { photo: photoUrl }),
     };
 
     const result = await updateContact(contactId, userId, updates);

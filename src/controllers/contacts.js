@@ -47,60 +47,29 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 
-// export const createContactsController = async (req, res, next) => {
-//   try {
-//     const avatar = req.file;
-//     let avatarUrl;
-//     if (avatar) {
-//       avatarUrl = await saveFileToCloudinary(avatar);
-//     }
-
-//     const contact = await createContact({
-//       ...req.body,
-//       avatar: avatarUrl,
-//       userId: req.user._id
-//     });
-
-//     res.status(201).json({
-//       status: 201,
-//       message: "Successfully created a contact!",
-//       data: contact
-//     });
-//   } catch (error) {
-//     console.error(' Error in createContactsController:', error);
-//     next(error);
-//   }
-// };
-
-
-
 export const createContactsController = async (req, res, next) => {
   try {
-    const userId = req.user._id;
     const photo = req.file;
-
     let photoUrl;
     if (photo) {
       photoUrl = await saveFileToCloudinary(photo);
     }
-
-    const payload = {
+    const contact = await createContact({
       ...req.body,
-      userId,
-      ...(photoUrl && { photo: photoUrl}),
-    };
-
-    const contact = await createContact(payload);
-
+      photo: photoUrl,
+      userId: req.user._id
+    });
     res.status(201).json({
-      status: 'success',
-      message: 'Contact created successfully',
-      data: contact,
+      status: 201,
+      message: "Successfully created a contact!",
+      data: contact
     });
   } catch (error) {
+    console.error(' Error in createContactsController:', error);
     next(error);
   }
 };
+
 
 
 // export const patchContactsController = async (req, res) => {

@@ -28,7 +28,7 @@ const contactShema = new Schema (
     ref: 'users',
     required: true,
     },
-    avatar: {
+    photo: {
      type: String,
      required: false,
     }

@@ -11,7 +11,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { TEMPLATE_DIR } from "../constants/paths.js";
 import { ENV_VARS } from "../constants/envVars.js";
-import { getFullNameFromGoogleTokenPayload, validateCode } from '../utils/googleOAuth2.js';
+// import { getFullNameFromGoogleTokenPayload, validateCode } from '../utils/googleOAuth2.js';
 
 
 const resetPasswordTemplate = fs.readFileSync(path.join(TEMPLATE_DIR, 'reset-password-email.html'),)
@@ -142,29 +142,29 @@ export const logoutUser = async (refreshToken) => {
     await Session.deleteOne({ refreshToken });
 };
 
-export const loginOrSignupWithGoogle = async (code) => {
-  const loginTicket = await validateCode(code);
-  const payload = loginTicket.getPayload();
-  if (!payload) throw createHttpError(401);
+// export const loginOrSignupWithGoogle = async (code) => {
+//   const loginTicket = await validateCode(code);
+//   const payload = loginTicket.getPayload();
+//   if (!payload) throw createHttpError(401);
 
-  let user = await User.findOne({ email: payload.email });
-  if (!user) {
-    const password = await bcrypt.hash(crypto.randomBytes(10), 10);
-    user = await User.create({
-      email: payload.email,
-      name: getFullNameFromGoogleTokenPayload(payload),
-      password,
-      role: 'parent',
-    });
-  }
+//   let user = await User.findOne({ email: payload.email });
+//   if (!user) {
+//     const password = await bcrypt.hash(crypto.randomBytes(10), 10);
+//     user = await User.create({
+//       email: payload.email,
+//       name: getFullNameFromGoogleTokenPayload(payload),
+//       password,
+//       role: 'parent',
+//     });
+//   }
 
-  const newSession = createSession();
+//   const newSession = createSession();
 
-  return await Session.create({
-    userId: user._id,
-    ...newSession,
-  });
-};
+//   return await Session.create({
+//     userId: user._id,
+//     ...newSession,
+//   });
+// };
 
 
 

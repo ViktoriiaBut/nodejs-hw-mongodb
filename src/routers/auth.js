@@ -22,7 +22,8 @@ authRouter.post('/logout', logoutUserController);
 authRouter.post('/send-reset-email', validateBody(requestResetEmailValidation), requestResetEmailController);
 authRouter.post('/get-google-link', getGoogleUrlController );
 authRouter.post('/reset-pwd', validateBody(resetPasswordValidation), resetPasswordController);
-// authRouter.post('/authorize-with-google');
+// authRouter.post('/authorize-with-google', getGoogleUrlController);
+// authRouter.post('/verify-google-code');
 
 export default authRouter;
 

@@ -7,7 +7,7 @@ import {
   refreshSessionController,
   requestResetEmailController,
   resetPasswordController,
-  getGoogleUrlController
+ 
 } from "../controllers/auth.js";
 
 import { validateBody } from "../middlewares/validateBody.js";
@@ -20,7 +20,7 @@ authRouter.post('/login', validateBody(loginUserValidation), loginUserController
 authRouter.post('/refresh', refreshSessionController);
 authRouter.post('/logout', logoutUserController);
 authRouter.post('/send-reset-email', validateBody(requestResetEmailValidation), requestResetEmailController);
-authRouter.post('/get-google-link', getGoogleUrlController );
+// authRouter.post('/get-google-link', getGoogleUrlController );
 authRouter.post('/reset-pwd', validateBody(resetPasswordValidation), resetPasswordController);
 // authRouter.post('/authorize-with-google', getGoogleUrlController);
 // authRouter.post('/verify-google-code');

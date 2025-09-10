@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import authRouter from './routers/auth.js';
 import { authenticate } from './middlewares/authenticate.js';
 import contactsRouter from './routers/contacts.js';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 export const setupServer = () => {
     const app = express();
@@ -22,6 +23,8 @@ export const setupServer = () => {
     app.use('/auth', authRouter);
 
     app.use('/contacts', authenticate, contactsRouter);
+
+    app.use('/api-docs', swaggerDocs());
 
     app.use(notFoundHandler);
 

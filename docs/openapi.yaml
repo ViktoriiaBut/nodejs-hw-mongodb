@@ -1,20 +1,21 @@
 openapi: 3.1.0
 info:
   version: 1.0.0
-  title: <назва вашого додатку>
+  title: Contacts app
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   description:
-    <опис вашого додатку>
+    This is a documentation of Contacts app
 tags:
   - name: Contacts
     description: Operations with contacts
   - name: Auth
     description: Auth operations
 servers:
-  - url: http://localhost:3000
   - url: https://nodejs-hw-mongodb-7-yg2j.onrender.com
+  - url: http://localhost:3000
+  
 paths:
   /contacts:
     get:

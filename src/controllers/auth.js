@@ -1,5 +1,6 @@
 import { registerUser, loginUser, logoutUser, refreshSession, requestResetEmail, resetPassword } from "../services/auth.js";
 import mongoose from "mongoose";
+// import { generateAuthUrl } from "../utils/googleOAuth2.js";
 
 
 const setUpSessionCookies = (session, res) => {
@@ -100,3 +101,28 @@ export const resetPasswordController = async (req, res, next) => {
     next(error);
   }
 };
+
+// export const getGoogleUrlController = async (req, res) => {
+//  const url = generateAuthUrl();
+//   res.json({
+//     status: 200,
+//     message: 'Successfully get Google OAuth url!',
+//     data: {
+//       url,
+//     },
+//   });
+// }
+
+// export const verifyGoogleUrlController = async (req, res) => {
+//   const session = await verifyGoogleUrl(req.body.code);
+
+//   setUpSessionCookies(requestResetEmail, res);
+
+//   res.json({
+//     status: 200,
+//     message: "Successfully authorzied with Goole OAuth!",
+//     data: {
+//       accessToken: session.token,
+//     }
+//   })
+// }
